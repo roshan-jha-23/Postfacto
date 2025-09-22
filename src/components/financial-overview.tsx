@@ -1,4 +1,3 @@
-"use client"
 
 import { ChevronRight } from "lucide-react"
 // import { useData } from "../context/DataWrapper"
@@ -13,16 +12,16 @@ export function FinancialOverview({ onSelectSection, selectedSection }: Financia
 
   const items = [
     { key: "basicInfo", label: "Basic Info" },
-    { key: "assets", label: "Assets" },
-    { key: "liabilities", label: "Liabilities" },
-    { key: "financialGoals", label: "Financial Goals" },
-    { key: "planSummary", label: "Plan Summary" },
+    { key: "healthProfile", label: "Health Profile" },
     { key: "recommendation", label: "Recommendation" },
+    // { key: "liabilities", label: "Liabilities" },
+    // { key: "financialGoals", label: "Financial Goals" },
+    { key: "planSummary", label: "Plan Summary" },
   ]
 
   return (
     <div className="bg-white rounded-2xl shadow-sm p-6 h-[550px] overflow-y-auto">
-      <h2 className="text-xl font-semibold mb-4 text-gray-700">Financial Overview</h2>
+      <h2 className="text-xl font-semibold mb-4 text-gray-700">Health Overview</h2>
       <ul className="space-y-4">
         {items.map((item) => (
           <li
