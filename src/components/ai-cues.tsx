@@ -39,3 +39,4 @@ export function AICues({ type }: AICuesProps) {
     </div>
   );
 }
+

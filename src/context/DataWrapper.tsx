@@ -1,5 +1,5 @@
 import type React from "react"
-import { createContext, useContext, useEffect, useState } from "react"
+import { createContext, useContext, useEffect, useState,useRef } from "react"
 import axios from "axios";
 
 const Context = createContext("")
@@ -26,7 +26,8 @@ export default function DataWrapper({ children }: { children: React.ReactNode })
   const [transcription, setTranscription] = useState<any[]>([])
   const [aiCues, setAICues] = useState<any[]>([])
   const [financials, setFinancials] = useState<any[]>([])
-  const [audioUrl, setAudioUrl] = useState<string>("")
+  const [audioUrl, setAudioUrl] = useState<string>("")  
+  const topContainerRef = useRef(null)
 
   useEffect(() => {
     // const mockData = {
@@ -940,6 +941,7 @@ export default function DataWrapper({ children }: { children: React.ReactNode })
     setFinancials,
     audioUrl,
     setAudioUrl,
+    topContainerRef
   }
   //@ts-ignore
   return <Context.Provider value={values}>{children}</Context.Provider>
