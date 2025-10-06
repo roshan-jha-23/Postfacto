@@ -65,52 +65,67 @@ const useData = () => {
 // --- FEEDBACK MODAL COMPONENT ---
 
 interface FeedbackModalProps {
-    isOpen: boolean;
-    onClose: () => void;
-    transcriptLine: string;
-    lineType: string;
-    allFeedback: Record<string, FeedbackItem[]>;
-    onNewFeedback: (line: string, feedback: FeedbackItem) => void;
+    // isOpen: boolean;
+    // onClose: () => void;
+    // transcriptLine: string;
+    // lineType: string;
+    // allFeedback: Record<string, FeedbackItem[]>;
+    // onNewFeedback: (line: string, feedback: FeedbackItem) => void;
 }
 
-const FeedbackModal: React.FC<FeedbackModalProps> = ({
-    isOpen,
-    onClose,
-    transcriptLine,
-    lineType,
-    allFeedback,
-    onNewFeedback,
+const FeedbackModal = ({
+    // isOpen,
+    // onClose,
+    // transcriptLine,
+    // lineType,
+    // allFeedback,
+    // onNewFeedback,
+    modelParams
 }) => {
     const [feedbackText, setFeedbackText] = useState('');
-    const currentFeedback = allFeedback[transcriptLine] || [];
-    const {topContainerRef}= useDataTemp()
+    //const currentFeedback = allFeedback[transcriptLine] || [];
+    const {topContainerRef,updateTranscriptionFeedback}= useDataTemp()
+
+    //console.log('modelParams',modelParams)
 
     useEffect(()=>{
         
-        isOpen ? document.body.style.overflowY = 'hidden' : document.body.style.overflowY='scroll' 
+        modelParams.isOpen ? document.body.style.overflowY = 'hidden' : document.body.style.overflowY='scroll' 
         console.log(topContainerRef.current.style.overflowY)
 
         return ()=>{
             document.body.style.overflowY='scroll' 
         }
-    },[isOpen])
+    },[modelParams.isOpen])
 
-    if (!isOpen) return null;
+    if (!modelParams.isOpen) return null;
 
     const handleSubmit = (e: React.FormEvent) => {
-        e.preventDefault();
-        if (!feedbackText.trim()) return;
+        // e.preventDefault();
+        // if (!feedbackText.trim()) return;
 
-        // Mock submission logic
-        const newFeedback: FeedbackItem = {
-            id: Date.now(), // Use timestamp as a unique ID
-            dev: 'Current Developer', // In a real app, this would be the authenticated user's name
-            text: feedbackText.trim(),
-            timestamp: new Date(),
-        };
+        // // Mock submission logic
+        // const newFeedback: FeedbackItem = {
+        //     id: Date.now(), // Use timestamp as a unique ID
+        //     dev: 'Current Developer', // In a real app, this would be the authenticated user's name
+        //     text: feedbackText.trim(),
+        //     timestamp: new Date(),
+        // };
 
-        onNewFeedback(transcriptLine, newFeedback);
-        setFeedbackText('');
+        // onNewFeedback(transcriptLine, newFeedback);
+        // setFeedbackText('');
+
+        let formObj = {
+            "transcript_id":"uuidv0",
+            feedback_id:"feedback_00c",
+            feedback:feedbackText,
+            timeStamp:'',
+            name:'varun',
+            type:modelParams.tabType
+        }
+
+        updateTranscriptionFeedback(formObj)
+        //setFeedbackText('')
     };
 
     const formatDate = (date: Date) => {
@@ -124,43 +139,43 @@ const FeedbackModal: React.FC<FeedbackModalProps> = ({
                 {/* Modal Header */}
                 <div className="p-5 border-b flex justify-between items-center">
                     <h3 className="text-xl font-bold text-gray-800">Developer Feedback</h3>
-                    <button onClick={onClose} className="text-gray-400 hover:text-gray-600 transition">
+                    <button  className="text-gray-400 hover:text-gray-600 transition">
                         <X className="w-6 h-6" />
                     </button>
                 </div>
 
                 {/* Transcript Context */}
                 <div className="p-5 bg-purple-50 border-b">
-                    <p className="text-xs font-semibold uppercase text-purple-700 mb-1">{lineType}</p>
+                    <p className="text-xs font-semibold uppercase text-purple-700 mb-1">{modelParams.tabType}</p>
                     <p className="text-base font-medium italic text-gray-700 leading-snug">
-                        "{transcriptLine}"
+                        "{modelParams.transcript}"
                     </p>
                 </div>
 
                 {/* Feedback List (Scrollable) */}
                 <div className="flex-1 overflow-y-auto p-5 space-y-4">
                     <h4 className="text-sm font-semibold text-gray-600 sticky top-0 bg-white pb-2 border-b">
-                        Existing Feedback ({currentFeedback.length})
+                        Existing Feedback ({modelParams.feedbacks.length})
                     </h4>
-                    {currentFeedback.length === 0 ? (
+                    {modelParams.feedbacks.length === 0 ? (
                         <p className="text-sm text-gray-500 italic">No feedback submitted yet for this line.</p>
                     ) : (
-                        currentFeedback
-                            .sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime()) // Newest first
+                        modelParams.feedbacks
+                            //.sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime()) // Newest first
                             .map((feedback) => (
                                 <div key={feedback.id} className="bg-gray-50 p-3 rounded-lg border border-gray-200">
                                     <div className="flex justify-between items-center text-xs text-gray-500 mb-1">
-                                        <span className="font-medium text-gray-700">{feedback.dev}</span>
-                                        <span>{formatDate(feedback.timestamp)}</span>
+                                        <span className="font-medium text-gray-700">{feedback.name}</span>
+                                        <span>{formatDate(new Date(Date.now() - 7200000))}</span>
                                     </div>
-                                    <p className="text-sm text-gray-800">{feedback.text}</p>
+                                    <p className="text-sm text-gray-800">{feedback.feedback}</p>
                                 </div>
                             ))
                     )}
                 </div>
 
                 {/* Feedback Submission Form */}
-                <form onSubmit={handleSubmit} className="p-5 border-t bg-gray-50">
+                <div className="p-5 border-t bg-gray-50">
                     <h4 className="text-sm font-semibold text-gray-700 mb-2">Submit New Feedback</h4>
                     <div className="flex items-end space-x-2">
                         <textarea
@@ -171,14 +186,15 @@ const FeedbackModal: React.FC<FeedbackModalProps> = ({
                             className="flex-1 p-3 border border-gray-300 rounded-lg text-sm resize-none focus:ring-purple-500 focus:border-purple-500"
                         />
                         <button
-                            type="submit"
-                            disabled={!feedbackText.trim()}
+                            //type="submit"
+                            //disabled={}
+                            onClick={()=>handleSubmit()}
                             className="p-3 bg-purple-600 text-white rounded-full shadow-lg hover:bg-purple-700 transition disabled:bg-purple-300 disabled:cursor-not-allowed"
                         >
                             <Send className="w-5 h-5" />
                         </button>
                     </div>
-                </form>
+                </div>
             </div>
         </div>
     );
@@ -187,27 +203,33 @@ const FeedbackModal: React.FC<FeedbackModalProps> = ({
 // --- TRANSCRIPT PANEL COMPONENT ---
 
 export function TranscriptPanel() {
-    const { transcription } = useData();
+    //const { transcription } = useData();
     const [query, setQuery] = useState('');
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedLine, setSelectedLine] = useState<{ line: string, type: string } | null>(null);
     const [allFeedback, setAllFeedback] = useState<Record<string, FeedbackItem[]>>(initialFeedback);
+    const {transcription} = useDataTemp()
 
-    const transcriptMessages: TranscriptLine[] = transcription.length > 0 ? transcription : initialTranscription;
-
+    const [modelParams,setModelParams] = useState({isOpen:false,feedbacks:[],transcript:'',tabType:'',timeStamp:''})
+    //const transcriptMessages: TranscriptLine[] = transcription.length > 0 ? transcription : initialTranscription;
+    
+    //const {transcription as transcriptions} = useDataTemp()
     // Filter messages based on query
-    const filteredMessages = useMemo(() => {
-        return transcriptMessages
-            .map((group) => ({
-                ...group,
-                transcript: group.transcript.filter((line) =>
-                    line.toLowerCase().includes(query.toLowerCase())
-                ),
-            }))
-            .filter((group) => group.transcript.length > 0);
-    }, [transcriptMessages, query]);
+    
+    // const filteredMessages = useMemo(() => {
+    //     return transcriptMessages
+    //         .map((group) => ({
+    //             ...group,
+    //             transcript: group.transcript.filter((line) =>
+    //                 line.toLowerCase().includes(query.toLowerCase())
+    //             ),
+    //         }))
+    //         .filter((group) => group.transcript.length > 0);
+    // }, [transcriptMessages, query]);
 
-    const handleOpenModal = useCallback((line: string, type: string) => {
+    // console.log('filteredMessages',filteredMessages)
+
+    const handleOpenModal = useCallback((line: string, type: string,feedbacks) => {
         setSelectedLine({ line, type });
         setIsModalOpen(true);
     }, []);
@@ -227,6 +249,9 @@ export function TranscriptPanel() {
         });
     }, []);
 
+    useEffect(()=>{
+        console.log('modelParams',modelParams)
+    },[modelParams])
     return (
         <div className="bg-white rounded-2xl shadow-xl p-6 flex flex-col font-sans h-full">
             {/* Header */}
@@ -262,38 +287,45 @@ export function TranscriptPanel() {
                     }
                 `}</style>
                 <div className="flex flex-col gap-6" style={{overflowY:'scroll',height:'max-content'}}>
-                    {filteredMessages.length > 0 ? (
-                        filteredMessages.map((group, index) => (
-                            <div key={index} className="space-y-3">
+                    {transcription.length > 0 ? (
+                        transcription.map((group, index) => {
+                            //console.log('group',group)
+                            return <div key={index} className="space-y-3">
                                 <h3 className="font-bold text-lg text-purple-700 pb-1">
                                     {group.type}
                                 </h3>
                                 <div className="flex flex-col gap-3">
-                                    {group.transcript.map((line, idx) => (
+                                    {group.transcripts.map((transcript, idx) => (
                                         <div
                                             key={idx}
                                             className={`flex justify-between items-center p-3 rounded-xl shadow-sm text-sm leading-relaxed transition ${
                                                 group.type === 'Basic Info'
                                                     ? 'bg-blue-50 border-l-4 border-blue-400'
                                                     : 'bg-green-50 border-l-4 border-green-400'
-                                            }`}
+                                            }`} 
+                                            style={{minHeight:'4rem'}}
                                         >
-                                            <span className="text-gray-800 flex-1 pr-4">{line}</span>
-                                            <button
-                                                onClick={() => handleOpenModal(line, group.type)}
-                                                className="flex items-center space-x-1 text-gray-500 hover:text-purple-600 transition duration-150 p-1 rounded-full hover:bg-white"
-                                                title={`Add/View Feedback for: "${line}"`}
-                                            >
-                                                <MessageSquare className="w-4 h-4" />
-                                                <span className="text-xs font-medium min-w-[10px]">
-                                                    ({allFeedback[line]?.length || 0})
-                                                </span>
-                                            </button>
+                                            <span className="text-gray-800 flex-1 pr-4">{transcript?.text} </span>
+                                            <div>
+                                                <button
+                                                    onClick={() => setModelParams(p=>{return {...p,isOpen:true,transcript:transcript.text,feedbacks:transcript.feedbacks,tabType:group.type}})}
+                                                    className="flex items-center space-x-1 text-gray-500 hover:text-purple-600 transition duration-150 p-1 rounded-full hover:bg-white"
+                                                    title={`Add/View Feedback for: "${transcript?.text}"`}
+                                                >
+                                                    <MessageSquare className="w-4 h-4" />
+                                                    <span className="text-xs font-medium min-w-[10px]">
+                                                        ({transcript?.feedbacks?.length || 0})
+                                                    </span>
+                                                </button>
+                                                <div style={{fontSize:'0.65rem'}}>
+                                                    Oct 12 2025
+                                                </div>
+                                            </div>
                                         </div>
                                     ))}
                                 </div>
                             </div>
-                        ))
+                            })
                     ) : (
                         <p className="text-gray-500 text-sm italic mt-4 p-4 text-center">
                             No transcript lines match your search query: "{query}"
@@ -303,14 +335,15 @@ export function TranscriptPanel() {
             </div>
 
             {/* Feedback Modal */}
-            {isModalOpen && selectedLine && (
+            {modelParams.isOpen && (
                 <FeedbackModal
-                    isOpen={isModalOpen}
-                    onClose={handleCloseModal}
-                    transcriptLine={selectedLine.line}
-                    lineType={selectedLine.type}
-                    allFeedback={allFeedback}
-                    onNewFeedback={handleNewFeedback}
+                    modelParams = {modelParams}
+                    // isOpen={isModalOpen}
+                    // onClose={handleCloseModal}
+                    // transcriptLine={selectedLine.line}
+                    // lineType={selectedLine.type}
+                    // //allFeedback={transcription}
+                    // onNewFeedback={handleNewFeedback}
                 />
             )}
         </div>

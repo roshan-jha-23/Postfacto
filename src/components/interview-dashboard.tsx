@@ -88,13 +88,14 @@ export function InterviewDashboard() {
           )}
         </div>
 
-        <AiCuesNew/>  
+        {/* <AiCuesNew type={selectedLabel}/>   */}
         {/* <TranscriptCues/> */}
         {/* {selectedSection && ( */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 mt-10 w-full px-6 md:px-12" >
             <div className="lg:col-span-1">
               <div className="bg-white p-6 rounded-xl shadow-md" style={{height:'80vh'}}>
-                <AICues type={selectedLabel} />
+                {/* <AICues type={selectedLabel} />*/}
+                <AiCuesNew type={selectedLabel}/>
               </div>
             </div>
             <div className="lg:col-span-1">

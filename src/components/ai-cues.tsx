@@ -12,6 +12,8 @@ export function AICues({ type }: AICuesProps) {
   
   const selectedType = aiCues.find((item: any) => item.type === type);
 
+  console.log('selectedType in old component',selectedType,type)
+
   if (!selectedType) {
     return (
       <div className="bg-white rounded-2xl shadow-sm p-6 h-[550px] overflow-y-auto">

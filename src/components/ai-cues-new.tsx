@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import { useData } from "../context/DataWrapper";
 
 // --- MOCK DATA ---
 const mockAiCuesData = [
@@ -40,21 +41,26 @@ const initialFeedbacks = {
 /**
  * A single React component that displays AI Cues and allows users to submit and view feedback.
  */
-const AICuesWithFeedback = () => {
+const AICuesWithFeedback = ({ type }) => {
     const [feedbacks, setFeedbacks] = useState(initialFeedbacks);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedCue, setSelectedCue] = useState(null);
     const [feedbackComment, setFeedbackComment] = useState('');
+    const { aiCues }: any = useData();
 
+    console.log('aicues in new component',aiCues)
     // Extract the cues for easy rendering
     const transcriptionCues = useMemo(() => {
         return mockAiCuesData.find(item => item.type === "Transcription")?.cues || [];
     }, []);
 
+    const selectedType = aiCues.find((item: any) => item.type === type);
+
+    console.log('selectedType in new component',selectedType,type)
     // Memoized array of feedbacks for the currently selected cue
     const currentCueFeedbacks = useMemo(() => {
-        if (!selectedCue) return [];
-        return feedbacks[selectedCue.id] || [];
+        // if (!selectedCue) return [];
+        // return feedbacks[selectedCue.id] || [];
     }, [selectedCue, feedbacks]);
 
     // Handler to open the modal
@@ -98,10 +104,10 @@ const AICuesWithFeedback = () => {
 
     // Renders a single AI Cue card
     const CueCard = ({ cue }) => {
-        const feedbackCount = feedbacks[cue.id]?.length || 0;
+        const feedbackCount = cue.feedbacks.length || 0;
 
         return (
-            <div className="bg-blue-50 p-4 rounded-lg shadow-sm">
+            <div className="bg-blue-50 p-4 rounded-lg shadow-sm" >
                 <div className="flex justify-between items-start">
                     <div>
                         <p className="font-medium text-blue-800 mb-2">{cue.header}</p>
@@ -111,9 +117,10 @@ const AICuesWithFeedback = () => {
                     </div>
                     {/* Feedback Button */}
                     <button
-                        onClick={() => openModal(cue)}
+                        onClick={() =>{openModal(cue)}}
                         className="relative p-2 rounded-full text-gray-500 hover:bg-blue-100 hover:text-blue-600 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
                         aria-label={`Open feedback for ${cue.header}`}
+                        
                     >
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
                             <path strokeLinecap="round" strokeLinejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
@@ -131,6 +138,7 @@ const AICuesWithFeedback = () => {
 
     // Renders the Feedback Modal
     const FeedbackModal = () => {
+        
         if (!isModalOpen) return null;
 
         return (
@@ -157,13 +165,13 @@ const AICuesWithFeedback = () => {
                     <div className="mb-6 h-48 overflow-y-auto pr-2">
                         <h4 className="text-md font-semibold text-gray-600 mb-3">Developer Feedback</h4>
                         <div className="space-y-3">
-                            {currentCueFeedbacks.length === 0 ? (
+                            {selectedCue.feedbacks.length === 0 ? (
                                 <p className="text-sm text-gray-500 italic">No feedback has been submitted for this cue yet.</p>
                             ) : (
-                                currentCueFeedbacks.map(fb => (
+                                selectedCue.feedbacks.map(fb => (
                                     <div key={fb.id} className="bg-gray-100 p-3 rounded-md">
-                                        <p className="font-semibold text-sm text-gray-700">{fb.author}</p>
-                                        <p className="text-sm text-gray-600 whitespace-pre-wrap">{fb.comment}</p>
+                                        <p className="font-semibold text-sm text-gray-700">{fb.name}</p>
+                                        <p className="text-sm text-gray-600 whitespace-pre-wrap">{fb.feedback}</p>
                                     </div>
                                 ))
                             )}
@@ -211,7 +219,7 @@ const AICuesWithFeedback = () => {
                 <div id="ai-cues-container" className="bg-white rounded-2xl shadow-sm p-6 min-h-[550px]">
                     <h2 className="text-xl font-semibold mb-4 text-gray-700">AI-Cues - Transcription</h2>
                     <div className="space-y-4">
-                        {transcriptionCues.map(cue => (
+                        {selectedType?.cues?.map(cue => (
                             <CueCard key={cue.id} cue={cue} />
                         ))}
                     </div>
@@ -219,7 +227,7 @@ const AICuesWithFeedback = () => {
             </main>
 
             {/* Feedback Modal (Conditional Render) */}
-            <FeedbackModal />
+            <FeedbackModal/>
         </div>
     );
 };
