@@ -452,6 +452,7 @@ export default function DataWrapper({ children }: { children: React.ReactNode })
           "card_type": "regular_card",
           "feedbacks": [
             {
+              "id":"",
               "name": "varun",
               "feedback": "this is not user spoken might be an issue with whisper",
               "timeStamp":""
@@ -1111,9 +1112,22 @@ export default function DataWrapper({ children }: { children: React.ReactNode })
 
   function updateCuesFeedback(feedbackObj){
     let group = aiCues.find(e=>e.type === feedbackObj.type)
-    let cue = group.cues.find(e=>e.id===feedbackObj.type)
-    console.log('updateCuesFeedback',cue)
+    let cue = group.cues.find(e=>e.id===feedbackObj.cue_id)
+    cue.feedbacks.push({
+      feedback_id:feedbackObj.feedback_id,
+      feedback:feedbackObj.feedback,
+      name:feedbackObj.name,
+      timeStamp:feedbackObj.timeStamp
+    }) 
+
+    console.log(aiCues)
+    setAICues([...aiCues])
+
+    console.log('updateCuesFeedback',cue,group,feedbackObj)
+  
   }
+
+  
   function updateTranscriptionFeedback(feedbackObj){
     //e.preventDefault()
     //console.log('feedback',feedbackObj)
@@ -1143,8 +1157,8 @@ export default function DataWrapper({ children }: { children: React.ReactNode })
   }
 
   useEffect(()=>{
-    console.log('transcription modified',transcription)
-  },[transcription])
+    console.log('aiCues modified',aiCues)
+  },[aiCues])
 
   const values = {
     transcription,
