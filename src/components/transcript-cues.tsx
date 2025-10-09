@@ -349,18 +349,18 @@ export function TranscriptPanel() {
 
             {/* Transcript Section */}
             <div className="flex-1 overflow-y-auto pr-2 custom-scrollbar">
-                <style jsx="true">{`
-                    .custom-scrollbar::-webkit-scrollbar {
-                        width: 8px;
-                    }
-                    .custom-scrollbar::-webkit-scrollbar-thumb {
-                        background-color: #d1d5db; /* gray-300 */
-                        border-radius: 10px;
-                    }
-                    .custom-scrollbar::-webkit-scrollbar-track {
-                        background: transparent;
-                    }
-                `}</style>
+                <style>{`
+    .custom-scrollbar::-webkit-scrollbar {
+        width: 8px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+        background-color: #d1d5db; /* gray-300 */
+        border-radius: 10px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+        background: transparent;
+    }
+`}</style>
                 <div className="flex flex-col gap-6">
                     {filteredMessages.length > 0 ? (
                         filteredMessages.map((group, index) => (

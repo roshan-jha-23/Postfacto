@@ -10,7 +10,7 @@ export function AICues({ type }: AICuesProps) {
   console.log("AI Cues data from context:", aiCues);
 
   
-  const selectedType = aiCues.find((item: any) => item.type === type);
+  const selectedType = aiCues?.find((item: any) => item.type === type);
 
   console.log('selectedType in old component',selectedType,type)
 

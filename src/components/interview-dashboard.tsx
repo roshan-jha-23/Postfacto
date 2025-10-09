@@ -1,6 +1,6 @@
 "use client"
 
-import { useRef, useState } from "react"
+import {  useState } from "react"
 import { Sidebar } from "./sidebar"
 import { Header } from "./header"
 import { FinancialOverview } from "./financial-overview"
@@ -9,7 +9,7 @@ import { AICues } from "./ai-cues"
 import  TranscriptPanel from "./transcript-panel-new"
 import { AudioPlayer } from "./audio-player"
 import { useData } from "../context/DataWrapper"
-import TranscriptCues from '../components/transcript-cues'
+// import TranscriptCues from '../components/transcript-cues'
 import AiCuesNew from '../components/ai-cues-new'
 // import axios from "axios"
 
