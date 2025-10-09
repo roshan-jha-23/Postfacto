@@ -1,5 +1,6 @@
 import { getFinancialContent } from "../lib/financial-data"
-import { useData } from "../context/DataWrapper"
+// import { useData } from "../context/DataWrapper"
+import { useAppSelector } from "../redux/store/store"
 
 interface FinancialContentDisplayProps {
   selectedSection: string
@@ -7,9 +8,9 @@ interface FinancialContentDisplayProps {
 }
 
 export function FinancialContentDisplay({ selectedSection, selectedLabel }: FinancialContentDisplayProps) {
-  const { financials }:any = useData()
-
-  const content = getFinancialContent(selectedSection, financials)
+  const financial=useAppSelector((state)=>state.customerInfo)
+   console.log("financial in modal",financial.customer_info)
+  const content = getFinancialContent(selectedSection, financial.customer_info)
 
   return (
     <div className="bg-white rounded-2xl shadow-sm p-6 h-[550px] overflow-y-auto">
