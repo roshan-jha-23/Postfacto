@@ -1,5 +1,3 @@
-"use client"
-
 import {  useState } from "react"
 import { Sidebar } from "./sidebar"
 import { Header } from "./header"
@@ -11,12 +9,15 @@ import { AudioPlayer } from "./audio-player"
 import { useData } from "../context/DataWrapper"
 // import TranscriptCues from '../components/transcript-cues'
 import AiCuesNew from '../components/ai-cues-new'
+import FlagComponent from "./Flag"
+import { useAppSelector } from "../redux/store/store"
 // import axios from "axios"
 
 export function InterviewDashboard() {
-  const [selectedSection, setSelectedSection] = useState<string | null>(null)
-  const [selectedLabel, setSelectedLabel] = useState<string>("")
-
+  const [selectedSection, setSelectedSection] = useState<string | null>("basicInfo")
+  const [selectedLabel, setSelectedLabel] = useState<string>("Basic Info")
+   const flags=useAppSelector((s)=>s.flags.Flag);
+    console.log(flags,"the flags from redux in app");
   //@ts-ignore
   const {topContainerRef} = useData()
 
@@ -41,7 +42,7 @@ export function InterviewDashboard() {
   }
 
   return (
-    <div className="flex flex-col md:flex-row ml-0 bg-gray-50 font-sans min-h-screen" ref={topContainerRef} style={{width:'75vw',margin:'0 auto',marginBottom:'20vh'}} >
+    <div className="flex flex-col md:flex-row ml-0  font-sans min-h-screen" ref={topContainerRef} style={{width:'75vw',margin:'0 auto',marginBottom:'20vh'}} >
       {/* Sidebar */}
       <Sidebar />
 
@@ -91,19 +92,24 @@ export function InterviewDashboard() {
         {/* <AiCuesNew type={selectedLabel}/>   */}
         {/* <TranscriptCues/> */}
         {/* {selectedSection && ( */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 mt-10 w-full px-6 md:px-12" >
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 w-full  " >
             <div className="lg:col-span-1">
-              <div className="bg-white p-6 rounded-xl shadow-md" style={{height:'80vh'}}>
+              <div className="" style={{height:'75vh'}}>
                 {/* <AICues type={selectedLabel} />*/}
                 <AiCuesNew type={selectedLabel}/>
               </div>
             </div>
             <div className="lg:col-span-1">
-              <div className="bg-white p-6 rounded-xl shadow-md " style={{height:'80vh'}} >
+              <div className=" mt-16" style={{height:'75vh'}}>
                 <TranscriptPanel/>
               </div>
             </div>
           </div>
+         <div className="lg:col-span-1 mt-6">
+  <div className="bg-white p-6 rounded-xl shadow-md">
+    <FlagComponent />
+  </div>
+</div>
         {/* )} */}
       </div>
 

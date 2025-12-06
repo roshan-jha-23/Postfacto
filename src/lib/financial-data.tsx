@@ -1,3 +1,7 @@
+
+import { useData } from "../context/DataWrapper"
+import { normalizeRecommendationData } from "../utils/normalisedData"
+
 type TableType = {
   header: string
   table_header: string[]
@@ -50,7 +54,7 @@ type BasicInfoType = {
 // =========================
 const renderBasicInfo = (info: BasicInfoType["customer_info"]) => {
   const { boxA, table, boxB, boxC } = info?.basicInfo
-  console.log(info)
+  console.log(info, " Basic Info info is here")
 
   const colCount = table.table_header.length
   const colClass =
@@ -60,27 +64,37 @@ const renderBasicInfo = (info: BasicInfoType["customer_info"]) => {
     colCount === 4 ? "grid-cols-4" :
     colCount === 5 ? "grid-cols-5" : "grid-cols-6"
 
-  // helper for rendering a box
-  const renderBox = (box: BoxAType) => `
-    <div class="bg-gray-50 p-6 rounded-lg border border-gray-200">
-      <h3 class="text-lg font-semibold text-gray-800 mb-4">${box.header}</h3>
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        ${Object.entries(box.data)
-          .map(
-            ([key, value]) => `
-              <div>
-                <p class="font-medium text-gray-700">${key}</p>
-                <p class="text-gray-900">${value}</p>
-              </div>`
-          )
-          .join("")}
+  // helper for rendering a box with optional key order
+  const renderBox = (box: BoxAType, order?: string[]) => {
+    const entries = order
+      ? order.map(key => [key, box.data[key]])
+      : Object.entries(box.data)
+
+    return `
+      <div class="bg-gray-50 p-6 rounded-lg border border-gray-200">
+        <h3 class="text-lg font-semibold text-gray-800 mb-4">${box.header}</h3>
+        <div class="overflow-x-auto">
+          <table class="min-w-full border border-gray-300 text-sm text-gray-700">
+            <tbody>
+              ${entries
+                .map(
+                  ([key, value]) => `
+                    <tr class="border-b border-gray-200">
+                      <td class="px-4 py-2 font-medium text-gray-800 w-1/3">${key}</td>
+                      <td class="px-4 py-2 text-gray-900">${value ?? "-"}</td>
+                    </tr>`
+                )
+                .join("")}
+            </tbody>
+          </table>
+        </div>
       </div>
-    </div>
-  `
+    `
+  }
 
   return `
     <div class="space-y-6">
-      <!-- Client Info -->
+      <!-- Box A -->
       ${renderBox(boxA)}
 
       <!-- Family Structure -->
@@ -89,14 +103,14 @@ const renderBasicInfo = (info: BasicInfoType["customer_info"]) => {
         <div class="grid ${colClass} gap-2 text-sm text-gray-700 font-medium">
           ${table.table_header.map((h: string) => `<div>${h}</div>`).join("")}
         </div>
-       ${(table.table_data ?? [])
-  .map(
-    (row: string[]) => `
-    <div class="grid ${colClass} gap-2 text-sm mt-1">
-      ${row.map((cell: string) => `<div>${cell}</div>`).join("")}
-    </div>`
-  )
-  .join("")}
+        ${(table.table_data ?? [])
+          .map(
+            (row: string[]) => `
+              <div class="grid ${colClass} gap-2 text-sm mt-1">
+                ${row.map((cell: string) => `<div>${cell}</div>`).join("")}
+              </div>`
+          )
+          .join("")}
       </div>
 
       <!-- Box B -->
@@ -122,19 +136,24 @@ const healthProfile = (info: any) => {
     colCount === 4 ? "grid-cols-4" :
     colCount === 5 ? "grid-cols-5" : "grid-cols-6"
 
+  // 🔹 renderBox now in a proper 2-column table layout
   const renderBox = (box: any) => `
     <div class="bg-gray-50 p-6 rounded-lg border border-gray-200">
       <h3 class="text-lg font-semibold text-gray-800 mb-4">${box.header}</h3>
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        ${Object.entries(box.data)
-          .map(
-            ([key, value]) => `
-              <div>
-                <p class="font-medium text-gray-700">${key}</p>
-                <p class="text-gray-900">${value || "-"}</p>
-              </div>`
-          )
-          .join("")}
+      <div class="overflow-x-auto">
+        <table class="min-w-full border border-gray-300 text-sm text-gray-700">
+          <tbody>
+            ${Object.entries(box.data)
+              .map(
+                ([key, value]) => `
+                  <tr class="border-b border-gray-200">
+                    <td class="px-4 py-2 font-medium text-gray-800 w-1/3">${key}</td>
+                    <td class="px-4 py-2 text-gray-900">${value || "-"}</td>
+                  </tr>`
+              )
+              .join("")}
+          </tbody>
+        </table>
       </div>
     </div>
   `
@@ -153,12 +172,12 @@ const healthProfile = (info: any) => {
         <div class="grid ${colClass} gap-2 text-sm text-gray-700 font-medium">
           ${table.table_header.map((h: string) => `<div>${h}</div>`).join("")}
         </div>
-        ${table.table_data
+        ${(table.table_data ?? [])
           .map(
             (row: string[]) => `
-            <div class="grid ${colClass} gap-2 text-sm mt-1">
-              ${row.map((cell: string) => `<div>${cell || "-"}</div>`).join("")}
-            </div>`
+              <div class="grid ${colClass} gap-2 text-sm mt-1">
+                ${row.map((cell: string) => `<div>${cell || "-"}</div>`).join("")}
+              </div>`
           )
           .join("")}
       </div>
@@ -167,75 +186,174 @@ const healthProfile = (info: any) => {
 }
 
 
-
 // =========================
 // Recommendations renderer
 // =========================
-const renderRecommendations = (info: any[]) => {
-  console.log(info, "Recommendations info is here")
-   const list = Array.isArray(info) ? info : [info] 
+const renderRecommendations = (info = [], selectedReco:any =[]) => {
+  console.log(info, "Recommendations info is here");
 
+  // STEP 1: Pehle plain info ko filter karo
+  const filteredInfo = info.filter((rec:any) =>
+    selectedReco.includes(rec?.planName?.value)
+  );
+
+  console.log(filteredInfo, "Filtered Info");
+
+  // STEP 2: Ab sirf filtered info ko normalize me feed karo
+  const listRaw = filteredInfo.map((item) =>
+    normalizeRecommendationData(item)
+  );
+
+  const list = Array.isArray(listRaw) ? listRaw : [listRaw].filter(Boolean);
+
+  console.log(list, "Normalized & Filtered Recommendations");
+
+  // STEP 3: Render karein
   return `
     <div class="space-y-6">
       ${list
         .map(
-          (rec: any) => `
-          <div class="bg-gray-50 p-6 rounded-lg border border-gray-200 space-y-6">
-            
-            <!-- Plan Card -->
-            <!-- Plan Card -->
-<div class="flex justify-between items-center bg-white p-5 rounded-xl shadow border border-gray-200">
-  <div>
-    <h3 class="text-lg font-semibold text-gray-800 capitalize">Plan Name:${rec.planName}</h3>
-    <p class="text-gray-700 mt-1">
-      Sum Insured: <span class="font-medium">₹${rec.sumInsured.toLocaleString()}</span>
-    </p>
-  </div>
-  <div class="text-right">
-    <p class="text-gray-700">Annual Premium</p>
-    <p class="text-lg font-semibold text-green-600">₹${rec.premium.toLocaleString()}</p>
-  </div>
-</div>
+          (rec:any) => `
+          <div class="bg-white p-6 rounded-lg border border-gray-300 space-y-6 shadow-sm">
 
-            <!-- Reasons -->
-            <div>
-              <h4 class="text-lg font-semibold text-gray-800 mb-2">Reason</h4>
-              <ul class="list-disc pl-5 space-y-1 text-gray-700">
-                ${rec.reason
-                  .split("\n")
-                  .map((line: string) => `<li>${line.replace(/^- /, "")}</li>`)
-                  .join("")}
-              </ul>
+            <!-- TOP BASIC INFO -->
+            <div class="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
+              <div class="divide-y divide-gray-200">
+                
+                <div class="flex justify-between items-center py-3">
+                  <p class="text-gray-600 font-medium">${
+                    rec.planName?.heading || "Plan Name"
+                  }</p>
+                  <p class="text-gray-900 text-lg font-semibold">${
+                    rec.planName?.value || "N/A"
+                  }</p>
+                </div>
+
+                <div class="flex justify-between items-center py-3">
+                  <p class="text-gray-600 font-medium">${
+                    rec.sumInsured?.heading || "Sum Insured"
+                  }</p>
+                  <p class="text-gray-900 text-lg font-semibold">₹${
+                    rec.sumInsured?.value?.toLocaleString?.() || "-"
+                  }</p>
+                </div>
+
+                <div class="flex justify-between items-center py-3 border-b border-gray-300">
+                  <p class="text-gray-600 font-medium">${
+                    rec.premium?.heading || "Premium"
+                  }</p>
+                  <p class="text-green-600 text-lg font-semibold">₹${
+                    rec.premium?.value?.toLocaleString?.() || "-"
+                  }</p>
+                </div>
+
+                ${
+                  rec.tenure
+                    ? `
+                <div class="flex justify-between items-center py-3">
+                  <p class="text-gray-600 font-medium">${rec.tenure.heading}</p>
+                  <p class="text-gray-900 text-lg font-semibold">${rec.tenure.value}</p>
+                </div>`
+                    : ""
+                }
+
+                ${
+                  rec.company
+                    ? `
+                <div class="flex justify-between items-center py-3 border-b border-gray-300">
+                  <p class="text-gray-600 font-medium">${rec.company.heading}</p>
+                  <p class="text-gray-900 text-lg font-semibold">${rec.company.value}</p>
+                </div>`
+                    : ""
+                }
+              </div>
             </div>
 
-            <!-- Riders -->
+            <!-- REASON -->
+            ${
+              rec?.reason
+                ? `
             <div>
-              <h4 class="text-lg font-semibold text-gray-800 mb-2">Riders</h4>
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                ${rec.riders
+              <h4 class="text-lg font-semibold text-gray-900 mb-2">${rec.reason.heading}</h4>
+              <ul class="list-none pl-6 space-y-1 text-gray-700 leading-relaxed">
+                ${rec.reason.value
+                  .split("\\n")
                   .map(
-                    (r: any) => `
+                    (line:any) =>
+                      `<li>${line.replace(/^-\\s*/, "").trim()}</li>`
+                  )
+                  .join("")}
+              </ul>
+            </div>`
+                : ""
+            }
+
+            <!-- KEY FEATURES -->
+            ${
+              rec?.keyFeatures?.value?.length
+                ? `
+            <div>
+              <h4 class="text-lg font-semibold text-gray-900 mb-2">${rec.keyFeatures.heading}</h4>
+
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                ${rec.keyFeatures.value
+                  .map(
+                    (f:any) => `
+                    <div class="p-4 rounded-lg border border-gray-300 bg-gray-50 shadow-sm">
+                      <p class="font-medium text-gray-900">${f.name}</p>
+                      <p class="text-sm text-gray-700">${f.desc}</p>
+                    </div>`
+                  )
+                  .join("")}
+              </div>
+            </div>`
+                : ""
+            }
+
+            <!-- RIDERS -->
+            ${
+              rec?.riders?.value?.length
+                ? `
+            <div>
+              <h4 class="text-lg font-semibold text-gray-900 mb-2">${rec.riders.heading}</h4>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                ${rec.riders.value
+                  .map(
+                    (r:any) => `
                     <div class="p-4 rounded-lg border shadow-sm ${
-                      r.include ? "bg-green-50 border-green-300" : "bg-red-50 border-red-300"
+                      r.include
+                        ? "bg-green-50 border-green-200"
+                        : "bg-red-50 border-red-200"
                     }">
                       <p class="font-medium ${
-                        r.include ? "text-green-800" : "text-red-800"
+                        r.include ? "text-green-700" : "text-red-700"
                       }">${r.name}</p>
                       <p class="text-sm ${
-                        r.include ? "text-green-700" : "text-red-700"
+                        r.include ? "text-green-600" : "text-red-600"
                       }">${r.desc}</p>
                     </div>`
                   )
                   .join("")}
               </div>
-            </div>
+            </div>`
+                : ""
+            }
 
-          </div>`
+          </div>
+        `
         )
         .join("")}
     </div>
-  `
-}
+  `;
+};
+
+
+
+
+
+
+
+
 
 
 
@@ -243,6 +361,7 @@ const renderRecommendations = (info: any[]) => {
 // Main function
 // =========================
 export const getFinancialContent = (section: string, customer_info: any[]): string => {
+  const { selectedReco } = useData();
   if (!customer_info || customer_info.length === 0) {
     return "<p class='text-gray-500'>No data available</p>"
   }
@@ -251,7 +370,8 @@ export const getFinancialContent = (section: string, customer_info: any[]): stri
     case "basicInfo":
       const basicInfo = customer_info.find((x: any) => x.type === "Basic Info")
       return basicInfo ? renderBasicInfo(basicInfo.customer_info) : "<p class='text-gray-500'>Basic info not found</p>"
-    case "healthProfile":
+    
+      case "healthProfile":
       const assets = customer_info.find((x: any) => x.type === "Health Profile")
       return assets ? healthProfile(assets.customer_info) : "<p class='text-gray-500'>Assets info not found</p>"
     // case "liabilities":
@@ -268,7 +388,7 @@ export const getFinancialContent = (section: string, customer_info: any[]): stri
 
     case "recommendation":
       const recs = customer_info.find((x: any) => x.type === "Recommendations")
-      return recs ? renderRecommendations(recs.customer_info.Recommendations) : "<p class='text-gray-500'>Recommendations not found</p>"
+      return recs ? renderRecommendations(recs.customer_info.Recommendations,selectedReco) : "<p class='text-gray-500'>Recommendations not found</p>"
 
     default:
       return "<p class='text-gray-500'>Section not found</p>"
