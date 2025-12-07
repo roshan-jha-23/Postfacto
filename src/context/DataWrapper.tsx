@@ -15,6 +15,195 @@ export function useData() {
   return ctx
 }
 
+
+
+const FinalReviewData = 
+{
+  audio_url:"https://storage.googleapis.com/postfacto-audiofiles/life_insurance_audio/cid_1783.mp3",
+  clientDetails: {
+    productPitch: "SBI Life Insurance",
+    sumAssured: 5000000,
+    Location: "Mumbai",
+    Family: "2 Adults, 2 Children",
+    incomeEmi: "Income: 12 LPA, EMI: 45000",
+    lifestyle: "Active Lifestyle"
+  },
+
+  performance: {
+    overallScore: 66,
+    breakdown: [
+      { label: "Product Knowledge", score: 9, maxScore: 10 },
+      { label: "Rapport Building", score: 9, maxScore: 10 },
+      { label: "Needs Analysis", score: 8, maxScore: 10 },
+      { label: "Objection Handling", score: 8, maxScore: 10 },
+      { label: "Cross-Selling", score: 5, maxScore: 10, color: "amber" },
+      { label: "Process Adherence", score: 10, maxScore: 10 }
+    ],
+    strengths: [
+      "Excellent Rapport Building in the first 5 minutes.",
+      "Accurate explanation of \"Infinite Care\" add-on.",
+      "Successfully handled the \"Price\" objection."
+    ],
+    improvements: [
+      "Missed cross-selling \"Personal Accident\" cover.",
+      "Did not explicitly ask for a reference at closing.",
+      "Talk-to-Listen ratio (65:35) is slightly high."
+    ]
+  },
+
+  
+  transcription: {
+    messages: [
+      {
+        id: "1",
+        speaker: "Agent",
+        name: "Agent",
+        time: "02:30",
+        content:
+          "So, regarding the coverage, this plan covers all hospitalization expenses, including room rent without any capping.",
+        isHighlighted: false,
+        isAICue: false,
+        aiPrompt: null
+      },
+      {
+        id: "2",
+        speaker: "Client",
+        name: "Client",
+        time: "02:32",
+        content:
+          "But I heard some plans have a waiting period for pre-existing diseases. My father has hypertension.",
+        isHighlighted: false,
+        isAICue: false,
+        aiPrompt: null
+      },
+      {
+        id: "3",
+        speaker: "Agent",
+        name: "Agent",
+        time: "02:34",
+        content:
+          "Yes, correct. Since you mentioned the history of hypertension, there is a standard waiting period of 2 years for that specific condition. However, accidents and other illnesses are covered from day one.",
+        isHighlighted: true,
+        isAICue: true,
+        aiPrompt: {
+          aiPrompt: ["Explain waiting period (2 years)", "Mention day-one coverage"]
+        }
+      },
+      {
+        id: "4",
+        speaker: "Client",
+        name: "Client",
+        time: "02:38",
+        content: "Okay, 2 years is reasonable. What about the premium?",
+        isHighlighted: false,
+        isAICue: false,
+        aiPrompt: null
+      },
+      {
+        id: "5",
+        speaker: "Agent",
+        name: "Agent",
+        time: "02:40",
+        content:
+          "The premium for the Health Assure+ plan starts at ₹3,500 per month for your age group and health profile. Since you mentioned your daily commute, we could also add a Personal Accident cover for just ₹375 more.",
+        isHighlighted: false,
+        isAICue: false,
+        aiPrompt: null
+      },
+      {
+        id: "6",
+        speaker: "Client",
+        name: "Client",
+        time: "02:45",
+        content: "That sounds good. Let me think about it and get back to you.",
+        isHighlighted: false,
+        isAICue: true,
+        aiPrompt: {
+          aiPrompt: ["data", "data"]
+        }
+      }
+    ]
+  },
+
+  detailedBreakdown: {
+    sections: [
+      {
+        title: "Product Knowledge",
+        subtitle: "Feature Explanation & Value Prop",
+        score: 9,
+        icon: "BookOpen",
+        tags: ["Room Rent Limits", "No-Claim Bonus", "Restoration Benefit"],
+        description:
+          "Demonstrated strong command over the 'Health Assure+' plan. You correctly explained the tiered room rent limits and the No-Claim Bonus structure."
+      },
+      {
+        title: "Rapport Building",
+        subtitle: "Relationship & Empathy",
+        score: 9,
+        icon: "Heart",
+        description:
+          "Strong opening. You effectively used the client's family context (daughter Aisha) to build a connection.",
+        clip: {
+          quote:
+            "I hope your father is managing his hypertension well. It requires careful attention...",
+          label: "Play Clip 02:04"
+        }
+      },
+      {
+        title: "Need Analysis",
+        subtitle: "Understanding Requirements",
+        score: 8,
+        icon: "Search",
+        description:
+          "You covered all mandatory health questions. Good job probing about the recent medical tests.",
+        checks: {
+          done: [
+            "Asked Family History",
+            "Checked Pre-existing Diseases",
+            "Verified Income/EMI"
+          ],
+          missed: ["Asked about existing Life Insurance"]
+        }
+      },
+      {
+        title: "Objection Handling",
+        subtitle: "Resolving Customer Concerns",
+        score: 8,
+        icon: "AlertCircle",
+        description:
+          "Handled the 'Waiting Period' concern effectively by acknowledging the pain point and explaining the industry standard.",
+        quote:
+          "I understand 2 years seems long, but this ensures comprehensive coverage for a chronic condition..."
+      },
+      {
+        title: "Cross-Selling & Up-Selling",
+        subtitle: "Basket Value Optimization",
+        score: 5,
+        icon: "Layers",
+        description:
+          "You missed an opportunity. The client mentioned 'daily commute', which is a strong trigger for a Personal Accident cover pitch.",
+        aiTip:
+          "Since you travel daily for work, a Personal Accident cover of ₹1Cr costs only ₹4500. Should I add that?"
+      },
+      {
+        title: "Process Adherence",
+        subtitle: "Compliance & Guidelines",
+        score: 10,
+        icon: "ClipboardCheck",
+        description:
+          "Perfect adherence. You correctly explained the exclusions and the claim process.",
+        tags: [
+          "Explained Exclusions",
+          "Explained Waiting Period",
+          "Disclosed Commission",
+          "Free-look period"
+        ]
+      }
+    ]
+  }
+};
+
+
 export default function DataWrapper({ children }: { children: React.ReactNode }) {
   const[selectedReco,setSelectedReco]=useState<string>("");
   const [reco,setReco]=useState<[]>([]);
@@ -22,7 +211,15 @@ export default function DataWrapper({ children }: { children: React.ReactNode })
   const match = url.match(/cid_\d{4}/);
   const customerId = match ? match[0] : "";
   console.log(customerId,"the id of customer");
+
+  const  [clientProfileData,setClientProfileData]=useState<any>(FinalReviewData.clientDetails);
   
+  const [performanceData,setPerformanceData]=useState<any>(FinalReviewData.performance);
+
+  const [breakdownData,setBreakdownData]=useState<any>(FinalReviewData.detailedBreakdown);
+
+  const [transcriptionData,setTranscriptionData]=useState<any>(FinalReviewData.transcription);
+
   if (!customerId) console.log("cid_xxxx not found")
         // const flags=useAppSelector((s)=>s.flags.Flag);
 
@@ -34,7 +231,7 @@ export default function DataWrapper({ children }: { children: React.ReactNode })
   const aiCues = useAppSelector((s) => s.cues?.cues || [])
   const financials = useAppSelector((s) => s.customerInfo?.customer_info || [])
 
-  const [audioUrl, setAudioUrl] = useState<string>("")
+  const [audioUrl, setAudioUrl] = useState<string>(FinalReviewData.audio_url || "" )
   const topContainerRef = useRef(null)
 
 useEffect(() => {
@@ -158,7 +355,15 @@ useEffect(() => {
     selectedReco,
     setSelectedReco,
     reco,
-    setReco
+    setReco,
+    clientProfileData,
+  setClientProfileData,
+  performanceData,
+  setPerformanceData,
+  breakdownData,
+  setBreakdownData,
+  transcriptionData,
+  setTranscriptionData
   }
 
   return <Context.Provider value={values}>{children}</Context.Provider>

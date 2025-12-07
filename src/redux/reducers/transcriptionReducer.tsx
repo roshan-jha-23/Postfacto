@@ -9,6 +9,16 @@ export type FeedbackItem = {
   type: string // "Basic Info" | "Health Profile" | etc.
   section: "transcript" | "cues"
 }
+// {
+//   id: string
+//   speaker: "Agent" | "Client"
+//   name: string
+//   time: string
+//   content: string
+//   isHighlighted?: boolean
+//   isAICue?: boolean
+//   aiPrompt?: []
+// }
 
 export type TranscriptItem = {
   id?: string

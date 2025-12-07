@@ -1,9 +1,10 @@
 import "./App.css"
 import { useState, useEffect } from "react"
-import { InterviewDashboard } from "./components/interview-dashboard"
+
 import DataWrapper from "./context/DataWrapper"
 import ReduxProvider from "./redux/store/Providers"
-import RightSide from "./components/RightSide"
+
+import MeetingAnalysisPage from "./components/PostfactoDashboard"
 // import { useAppSelector } from "./redux/store/store"
 
 function App() {
@@ -69,7 +70,7 @@ function App() {
   return (
     <ReduxProvider>
       <DataWrapper>
-       <RightSide/>
+       <MeetingAnalysisPage/>
       </DataWrapper>
     </ReduxProvider>
   )
