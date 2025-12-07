@@ -1,4 +1,4 @@
-"use client";
+
 
 import { ThumbsUp, TrendingUp } from "lucide-react";
 import { ScoreItem } from "./score-item";

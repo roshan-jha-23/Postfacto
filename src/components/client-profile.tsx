@@ -1,4 +1,4 @@
-"use client"
+
 
 import { useData } from "../context/DataWrapper"
 

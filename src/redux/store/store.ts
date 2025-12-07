@@ -4,14 +4,14 @@ import { useDispatch, useSelector, type TypedUseSelectorHook } from "react-redux
 import customerInfoReducer from "../reducers/customerInfoReducer"
 import transcriptionReducer from "../reducers/transcriptionReducer"
 import cuesReducer from "../reducers/cuesReducer"
-import flagReducer from "../reducers/flagReducer" // <-- YEH IMPORT KARNA THA
+import flagReducer from "../reducers/flagReducer" 
 
 export const store = configureStore({
   reducer: {
     customerInfo: customerInfoReducer,
     transcription: transcriptionReducer,
     cues: cuesReducer,
-    flags: flagReducer,   // <-- AB PERFECT
+    flags: flagReducer, 
   },
 })
 

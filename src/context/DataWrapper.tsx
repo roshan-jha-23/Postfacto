@@ -20,6 +20,11 @@ export function useData() {
 const FinalReviewData = 
 {
   audio_url:"https://storage.googleapis.com/postfacto-audiofiles/life_insurance_audio/cid_1783.mp3",
+  meetingMetadata: {
+    clientName:"Anjali Sharma" ,
+    agentName:"Rahul Verma", 
+    date:"Aug 14, 2025"
+  },
   clientDetails: {
     productPitch: "SBI Life Insurance",
     sumAssured: 5000000,
@@ -220,6 +225,8 @@ export default function DataWrapper({ children }: { children: React.ReactNode })
 
   const [transcriptionData,setTranscriptionData]=useState<any>(FinalReviewData.transcription);
 
+  const [meetingMetadata,setMeetingMetadata]=useState<any>(FinalReviewData.meetingMetadata);  
+
   if (!customerId) console.log("cid_xxxx not found")
         // const flags=useAppSelector((s)=>s.flags.Flag);
 
@@ -363,7 +370,9 @@ useEffect(() => {
   breakdownData,
   setBreakdownData,
   transcriptionData,
-  setTranscriptionData
+  setTranscriptionData,
+  meetingMetadata,
+  setMeetingMetadata
   }
 
   return <Context.Provider value={values}>{children}</Context.Provider>

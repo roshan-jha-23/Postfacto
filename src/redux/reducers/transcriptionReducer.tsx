@@ -9,6 +9,7 @@ export type FeedbackItem = {
   type: string // "Basic Info" | "Health Profile" | etc.
   section: "transcript" | "cues"
 }
+
 // {
 //   id: string
 //   speaker: "Agent" | "Client"
@@ -20,7 +21,8 @@ export type FeedbackItem = {
 //   aiPrompt?: []
 // }
 
-export type TranscriptItem = {
+export type TranscriptItem =
+{
   id?: string
   pid: string
   text: string
@@ -153,19 +155,12 @@ const transcriptionSlice = createSlice({
 })
 
 export const {
-
   setTranscription,
-  
   clearTranscription,
-  
   addTranscriptionFeedback,
-  
   updateTranscriptionFeedback,
-  
   removeTranscriptionFeedback,
-  
   removeTranscriptionFeedbackById,
-  
   confirmTranscriptionFeedback,
 } = transcriptionSlice.actions
 
