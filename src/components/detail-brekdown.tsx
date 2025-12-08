@@ -1,3 +1,6 @@
+import { DetailSection } from "./detail-section";
+import { useData } from "../context/DataWrapper";
+
 import {
   BookOpen,
   Heart,
@@ -5,29 +8,26 @@ import {
   AlertCircle,
   Layers,
   ClipboardCheck,
-  CheckCircle2,
-  Lightbulb
+  Lightbulb,
+  CheckCircle2
 } from "lucide-react";
-import { DetailSection } from "./detail-section";
-import { useData } from "../context/DataWrapper";
 
-const ICON_MAP:any = {
-  BookOpen,
-  Heart,
-  Search,
-  AlertCircle,
-  Layers,
-  ClipboardCheck,
-  CheckCircle2,
-  Lightbulb
+const FIXED_ICONS: any = {
+  "Product Knowledge": BookOpen,
+  "Rapport Building": Heart,
+  "Need Analysis": Search,
+  "Objection Handling": AlertCircle,
+  "Cross-Selling & Up-Selling": Layers,
+  "Process Adherence": ClipboardCheck
 };
+
 export function DetailedBreakdown() {
   const { breakdownData } = useData();
 
   return (
     <div className="space-y-6">
       {breakdownData?.sections?.map((sec: any, idx: number) => {
-        const IconComp = ICON_MAP[sec.icon];
+        const IconComp = FIXED_ICONS[sec.title] || BookOpen;
 
         return (
           <DetailSection
@@ -39,12 +39,10 @@ export function DetailedBreakdown() {
             iconBgColor={sec.iconBgColor}
           >
             <div>
-             
               {sec.description && (
                 <p className="text-sm text-slate-600 mb-3">{sec.description}</p>
               )}
 
-             
               {sec.tags && (
                 <div className="mt-3 flex flex-wrap gap-2">
                   {sec.tags.map((tag: string, i: number) => (
@@ -58,7 +56,6 @@ export function DetailedBreakdown() {
                 </div>
               )}
 
-            
               {sec.checks && (
                 <div className="mt-3 grid grid-cols-2 gap-2 text-sm">
                   {sec.checks.done?.map((c: string, i: number) => (
@@ -77,7 +74,6 @@ export function DetailedBreakdown() {
                 </div>
               )}
 
-             
               {sec.clip && (
                 <div className="text-xs bg-slate-100 p-3 rounded text-slate-500 italic border-l-4 border-indigo-400">
                   {sec.clip.quote}
@@ -87,7 +83,6 @@ export function DetailedBreakdown() {
                 </div>
               )}
 
-              
               {sec.aiTip && (
                 <div className="flex items-start gap-3 p-3 bg-purple-50 rounded-lg border border-purple-100">
                   <Lightbulb className="h-5 w-5 text-purple-600 flex-shrink-0 mt-0.5" />

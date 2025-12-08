@@ -25,15 +25,15 @@ export function Header() {
           <div className="flex items-center gap-6 text-sm mt-2">
             <div className="flex items-center gap-2 text-gray-600">
               <User className="h-4 w-4 text-gray-400" />
-              <span className="font-medium">{meetingMetadata.clientName}</span>
+              <span className="font-medium">{meetingMetadata?.clientName}</span>
             </div>
             <div className="flex items-center gap-2 text-gray-600">
               <Briefcase className="h-4 w-4 text-gray-400" />
-              <span className="font-medium">{meetingMetadata.agentName}</span>
+              <span className="font-medium">{meetingMetadata?.agentName}</span>
             </div>
             <div className="flex items-center gap-2 text-gray-600">
               <Calendar className="h-4 w-4 text-gray-400" />
-              <span>{meetingMetadata.date}</span>
+              <span>{meetingMetadata?.date}</span>
             </div>
           </div>
         </div>

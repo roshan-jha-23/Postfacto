@@ -21,9 +21,9 @@ const FinalReviewData =
 {
   audio_url:"https://storage.googleapis.com/postfacto-audiofiles/life_insurance_audio/cid_1783.mp3",
   meetingMetadata: {
-    clientName:"Anjali Sharma" ,
-    agentName:"Rahul Verma", 
-    date:"Aug 14, 2025"
+    clientName:"Roshan Jha" ,
+    agentName:"Ajay Sir", 
+    date:"Dec 8, 2025"
   },
   clientDetails: {
     productPitch: "SBI Life Insurance",
@@ -240,6 +240,23 @@ export default function DataWrapper({ children }: { children: React.ReactNode })
 
   const [audioUrl, setAudioUrl] = useState<string>(FinalReviewData.audio_url || "" )
   const topContainerRef = useRef(null)
+
+  useEffect(() => {
+    const getInfo=async()=>{
+      try{
+const res = await axios.post("http://localhost:5000/submit");
+console.log("Client Profile Data:", res.data);
+setClientProfileData(res.data.clientDetails);
+setPerformanceData(res.data.performance);
+setBreakdownData(res.data.detailedBreakdown);
+setTranscriptionData(res.data.transcription);
+setMeetingMetadata(res.data.meetingMetadata);
+      }catch(err){
+        console.error("Error fetching data:", err);
+      }
+    }
+    getInfo();
+  }, [])
 
 useEffect(() => {
   const fetchFinancials = async () => {
