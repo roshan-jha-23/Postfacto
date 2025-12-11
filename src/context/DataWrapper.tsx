@@ -5,7 +5,7 @@ import { useAppDispatch, useAppSelector } from "../redux/store/store"
 import { setTranscription } from "../redux/reducers/transcriptionReducer"
 import { setCues } from "../redux/reducers/cuesReducer"
 import { setCustomerInfo } from "../redux/reducers/customerInfoReducer"
-import { setFlag } from "../redux/reducers/flagReducer"
+// import { setFlag } from "../redux/reducers/flagReducer"
 
 const Context = createContext<any>(null)
 
@@ -56,8 +56,7 @@ const FinalReviewData =
     ]
   },
 
-  
-  transcription: {
+transcription: {
     messages: [
       {
         id: "1",
@@ -113,7 +112,11 @@ const FinalReviewData =
           "The premium for the Health Assure+ plan starts at ₹3,500 per month for your age group and health profile. Since you mentioned your daily commute, we could also add a Personal Accident cover for just ₹375 more.",
         isHighlighted: false,
         isAICue: false,
-        aiPrompt: null
+        aiPrompt: null,
+        flags:{
+          color:"gray",
+          data:[]
+        }
       },
       {
         id: "6",
@@ -125,6 +128,10 @@ const FinalReviewData =
         isAICue: true,
         aiPrompt: {
           aiPrompt: ["data", "data"]
+        },
+        flags:{
+          color:"red",
+          data:[{text:"Client seems hesitant at closing.",time:"02:45"},{text:"Agent did not ask for a reference.",time:"02:46"}]
         }
       }
     ]
@@ -244,24 +251,7 @@ export default function DataWrapper({ children }: { children: React.ReactNode })
   useEffect(() => {
     const getInfo=async()=>{
       try{
-const res = await axios.post("http://localhost:5000/submit");
-console.log("Client Profile Data:", res.data);
-setClientProfileData(res.data.clientDetails);
-setPerformanceData(res.data.performance);
-setBreakdownData(res.data.detailedBreakdown);
-setTranscriptionData(res.data.transcription);
-setMeetingMetadata(res.data.meetingMetadata);
-      }catch(err){
-        console.error("Error fetching data:", err);
-      }
-    }
-    getInfo();
-  }, [])
-
-useEffect(() => {
-  const fetchFinancials = async () => {
-    try {
-      const res = await axios.post(
+const res =  await axios.post(
         "https://recruito.vitti.insure/lms_router",
        { route_name:"main_router",
         json_data:
@@ -270,39 +260,24 @@ useEffect(() => {
             params: { session_id: customerId } 
           }}
       )
-
-      console.log("Financials data:", res.data)
-
-      // 🔥 STEP 1: full customer_info array
-      const fullInfo = res.data.customer_info || []
-
-      // 🔥 STEP 2: find Recommendations section
-      const recoSection = fullInfo.find((x: any) => x.type === "Recommendations")
-
-      // 🔥 STEP 3: safely extract plan names
-      const allPlanNames =
-        recoSection?.customer_info?.Recommendations?.map(
-          (item: any) => item.planName?.value
-        ) || []
-
-      console.log("Extracted plan names:", allPlanNames)
-
-      // 🔥 STEP 4: Set to state
-      setReco(allPlanNames)
-
-      // Existing redux dispatches
-      setAudioUrl(res.data.audio_url || "")
-      dispatch(setCustomerInfo(fullInfo))
-      dispatch(setTranscription(res.data.transcript || []))
-      dispatch(setCues(res.data.cues || []))
-      dispatch(setFlag(res.data.flag_data || []))
-    
-    } catch (err) {
-      console.error("Failed to fetch Financials", err)
+console.log("Client Profile Data:", res.data);
+setClientProfileData(res.data.clientDetails);
+setPerformanceData(res.data.performance);
+setBreakdownData(res.data.detailedBreakdown);
+setTranscriptionData(res.data.transcription);
+setMeetingMetadata(res.data.meetingMetadata);
+setAudioUrl(res.data.audio_url);
+      }catch(err){
+        console.error("Error fetching data:", err);
+      }
     }
-  }
+    getInfo();
+  }, [])
 
-  fetchFinancials()
+useEffect(() => {
+  
+
+  // fetchFinancials()
 }, [dispatch, customerId])
 
 
