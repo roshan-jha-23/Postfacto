@@ -17,222 +17,401 @@ export function useData() {
 
 
 
-const FinalReviewData = 
-{
-  audio_url:"https://storage.googleapis.com/postfacto-audiofiles/life_insurance_audio/cid_1783.mp3",
-  meetingMetadata: {
-    clientName:"Roshan Jha" ,
-    agentName:"Ajay Sir", 
-    date:"Dec 8, 2025"
-  },
-  clientDetails: {
-    productPitch: "SBI Life Insurance",
-    sumAssured: 5000000,
-    Location: "Mumbai",
-    Family: "2 Adults, 2 Children",
-    incomeEmi: "Income: 12 LPA, EMI: 45000",
-    lifestyle: "Active Lifestyle"
+const FinalReviewData ={
+  audio_url: "./audio/ICICI-BANK-VITT-AI_2025-12-16.mp3",
+
+  callMeta: {
+    language: "en-IN",
+    meetTitle: "ICICI Bank Discovery Call",
+    duration: "12:34",
+    agentScore: 7.7,
+    leadStatus: "Warm - Hot",
+    clientName: "Rameezuddin Chaudhary",
+    callType: "Product Demo",
+    date: "2025-12-17",
+    session_id: "session_12345",
   },
 
-  performance: {
-    overallScore: 66,
-    breakdown: [
-      { label: "Product Knowledge", score: 9, maxScore: 10 },
-      { label: "Rapport Building", score: 9, maxScore: 10 },
-      { label: "Needs Analysis", score: 8, maxScore: 10 },
-      { label: "Objection Handling", score: 8, maxScore: 10 },
-      { label: "Cross-Selling", score: 5, maxScore: 10, color: "amber" },
-      { label: "Process Adherence", score: 10, maxScore: 10 }
+   transcript: [
+    {
+      time: "00:24",
+      speaker: "Bibhuti Anand",
+      role: "Agent",
+      text: "Hi Rameez, good afternoon.",
+      speaker_id: "agent_001",
+      session_id: "session_12345",
+      unique_id: "tx_001",
+    },
+    {
+      time: "00:32",
+      speaker: "Rameezuddin Chaudhary",
+      role: "Client",
+      text: "Good afternoon Bibhuti, thanks for joining.",
+      speaker_id: "client_001",
+      session_id: "session_12345",
+      unique_id: "tx_002",
+    },
+    {
+      time: "01:05",
+      speaker: "Bibhuti Anand",
+      role: "Agent",
+      text:
+        "We work with BFSI teams to provide real-time insights during customer conversations using AI.",
+      speaker_id: "agent_001",
+      session_id: "session_12345",
+      unique_id: "tx_003",
+    },
+    {
+      time: "01:42",
+      speaker: "Rameezuddin Chaudhary",
+      role: "Client",
+      text:
+        "Is this usable during live telecalling or only after the call?",
+      speaker_id: "client_001",
+      session_id: "session_12345",
+      unique_id: "tx_004",
+    },
+    {
+      time: "02:10",
+      speaker: "Bibhuti Anand",
+      role: "Agent",
+      text:
+        "Currently it’s post-call, but real-time assist is on our near-term roadmap.",
+      speaker_id: "agent_001",
+      session_id: "session_12345",
+      unique_id: "tx_005",
+    },
+    {
+      time: "04:55",
+      speaker: "Rameezuddin Chaudhary",
+      role: "Client",
+      text:
+        "Accuracy and latency are critical for us, especially in lending.",
+      speaker_id: "client_001",
+      session_id: "session_12345",
+      unique_id: "tx_006",
+    },
+  ],
+
+ QualityAssessmentData: [
+  {
+    id: 0,
+    topic: "Need Analysis",
+    score: 7.5,
+    grade: "Average",
+    color: "yellow",
+    icon: "target",
+    session_id: "session_12345",
+    tags: [
+      {
+        tag_id: "tag_na_001",
+        name: "BFSI Context Identification",
+        linked_transcript_id: "tx_003",
+        session_id: "session_12345",
+        sentiment: "positive",
+        analysis:
+          "Agent correctly positioned the solution for BFSI workflows and lending use-cases early in the call.",
+      },
+      {
+        tag_id: "tag_na_002",
+        name: "Live Telecalling Expectation",
+        linked_transcript_id: "tx_004",
+        session_id: "session_12345",
+        sentiment: "negative",
+        analysis:
+          "Client’s expectation for real-time telecalling assist was acknowledged but not deeply probed.",
+      },
+      {
+        tag_id: "tag_na_003",
+        name: "Client Priority Mapping",
+        linked_transcript_id: "tx_006",
+        session_id: "session_12345",
+        sentiment: "neutral",
+        analysis:
+          "Accuracy and latency were identified as priorities, but no follow-up quantification was done.",
+      },
     ],
-    strengths: [
-      "Excellent Rapport Building in the first 5 minutes.",
-      "Accurate explanation of \"Infinite Care\" add-on.",
-      "Successfully handled the \"Price\" objection."
+  },
+
+  {
+    id: 1,
+    topic: "Product Knowledge",
+    score: 8.5,
+    grade: "Strong",
+    color: "green",
+    icon: "book",
+    session_id: "session_12345",
+    tags: [
+      {
+        tag_id: "tag_pk_001",
+        name: "Architecture Explanation",
+        linked_transcript_id: "tx_003",
+        session_id: "session_12345",
+        sentiment: "positive",
+        analysis:
+          "Agent confidently explained AI-driven post-call analysis tailored for BFSI teams.",
+      },
+      {
+        tag_id: "tag_pk_002",
+        name: "Latency Awareness",
+        linked_transcript_id: "tx_006",
+        session_id: "session_12345",
+        sentiment: "positive",
+        analysis:
+          "Demonstrated awareness of latency sensitivity in lending operations.",
+      },
+      {
+        tag_id: "tag_pk_003",
+        name: "Roadmap Clarity",
+        linked_transcript_id: "tx_005",
+        session_id: "session_12345",
+        sentiment: "neutral",
+        analysis:
+          "Roadmap was mentioned but lacked concrete timelines or milestones.",
+      },
     ],
-    improvements: [
-      "Missed cross-selling \"Personal Accident\" cover.",
-      "Did not explicitly ask for a reference at closing.",
-      "Talk-to-Listen ratio (65:35) is slightly high."
-    ]
   },
 
-transcription: {
-    messages: [
+  {
+    id: 2,
+    topic: "Communication Clarity",
+    score: 8.0,
+    grade: "Good",
+    color: "green",
+    icon: "message-circle",
+    session_id: "session_12345",
+    tags: [
       {
-        id: "1",
-        speaker: "Agent",
-        name: "Agent",
-        time: "02:30",
-        content:
-          "So, regarding the coverage, this plan covers all hospitalization expenses, including room rent without any capping.",
-        isHighlighted: false,
-        isAICue: false,
-        aiPrompt: null
+        tag_id: "tag_cc_001",
+        name: "Clear Value Proposition",
+        linked_transcript_id: "tx_003",
+        session_id: "session_12345",
+        sentiment: "positive",
+        analysis:
+          "Value proposition was explained in simple, business-aligned language.",
       },
       {
-        id: "2",
-        speaker: "Client",
-        name: "Client",
-        time: "02:32",
-        content:
-          "But I heard some plans have a waiting period for pre-existing diseases. My father has hypertension.",
-        isHighlighted: false,
-        isAICue: false,
-        aiPrompt: null
+        tag_id: "tag_cc_002",
+        name: "Jargon Control",
+        linked_transcript_id: "tx_005",
+        session_id: "session_12345",
+        sentiment: "positive",
+        analysis:
+          "Avoided excessive technical jargon while speaking to a business stakeholder.",
       },
-      {
-        id: "3",
-        speaker: "Agent",
-        name: "Agent",
-        time: "02:34",
-        content:
-          "Yes, correct. Since you mentioned the history of hypertension, there is a standard waiting period of 2 years for that specific condition. However, accidents and other illnesses are covered from day one.",
-        isHighlighted: true,
-        isAICue: true,
-        aiPrompt: {
-          aiPrompt: ["Explain waiting period (2 years)", "Mention day-one coverage"]
-        }
-      },
-      {
-        id: "4",
-        speaker: "Client",
-        name: "Client",
-        time: "02:38",
-        content: "Okay, 2 years is reasonable. What about the premium?",
-        isHighlighted: false,
-        isAICue: false,
-        aiPrompt: null
-      },
-      {
-        id: "5",
-        speaker: "Agent",
-        name: "Agent",
-        time: "02:40",
-        content:
-          "The premium for the Health Assure+ plan starts at ₹3,500 per month for your age group and health profile. Since you mentioned your daily commute, we could also add a Personal Accident cover for just ₹375 more.",
-        isHighlighted: false,
-        isAICue: false,
-        aiPrompt: null,
-        flags:{
-          color:"gray",
-          data:[]
-        }
-      },
-      {
-        id: "6",
-        speaker: "Client",
-        name: "Client",
-        time: "02:45",
-        content: "That sounds good. Let me think about it and get back to you.",
-        isHighlighted: false,
-        isAICue: true,
-        aiPrompt: {
-          aiPrompt: ["data", "data"]
-        },
-        flags:{
-          color:"red",
-          data:[{text:"Client seems hesitant at closing.",time:"02:45"},{text:"Agent did not ask for a reference.",time:"02:46"}]
-        }
-      }
-    ]
+    ],
   },
 
-  detailedBreakdown: {
-    sections: [
+  {
+    id: 3,
+    topic: "Objection Handling",
+    score: 7.0,
+    grade: "Needs Polish",
+    color: "yellow",
+    icon: "shield",
+    session_id: "session_12345",
+    tags: [
       {
-        title: "Product Knowledge",
-        subtitle: "Feature Explanation & Value Prop",
-        score: 9,
-        icon: "BookOpen",
-        tags: ["Room Rent Limits", "No-Claim Bonus", "Restoration Benefit"],
-        description:
-          "Demonstrated strong command over the 'Health Assure+' plan. You correctly explained the tiered room rent limits and the No-Claim Bonus structure."
+        tag_id: "tag_oh_001",
+        name: "Real-time Gap Objection",
+        linked_transcript_id: "tx_004",
+        session_id: "session_12345",
+        sentiment: "negative",
+        analysis:
+          "Agent acknowledged the objection but did not counter with interim solutions or beta access.",
       },
       {
-        title: "Rapport Building",
-        subtitle: "Relationship & Empathy",
-        score: 9,
-        icon: "Heart",
-        description:
-          "Strong opening. You effectively used the client's family context (daughter Aisha) to build a connection.",
-        clip: {
-          quote:
-            "I hope your father is managing his hypertension well. It requires careful attention...",
-          label: "Play Clip 02:04"
-        }
+        tag_id: "tag_oh_002",
+        name: "Confidence Under Pushback",
+        linked_transcript_id: "tx_006",
+        session_id: "session_12345",
+        sentiment: "neutral",
+        analysis:
+          "Handled concerns calmly but lacked assertive reassurance using data points.",
+      },
+    ],
+  },
+
+  {
+    id: 4,
+    topic: "Rapport & Empathy",
+    score: 6.5,
+    grade: "Weak",
+    color: "orange",
+    icon: "heart",
+    session_id: "session_12345",
+    tags: [
+      {
+        tag_id: "tag_re_001",
+        name: "Transactional Tone",
+        linked_transcript_id: "tx_001",
+        session_id: "session_12345",
+        sentiment: "negative",
+        analysis:
+          "Conversation remained mostly transactional with limited personal engagement.",
       },
       {
-        title: "Need Analysis",
-        subtitle: "Understanding Requirements",
-        score: 8,
-        icon: "Search",
-        description:
-          "You covered all mandatory health questions. Good job probing about the recent medical tests.",
-        checks: {
-          done: [
-            "Asked Family History",
-            "Checked Pre-existing Diseases",
-            "Verified Income/EMI"
-          ],
-          missed: ["Asked about existing Life Insurance"]
-        }
+        tag_id: "tag_re_002",
+        name: "Client Acknowledgement",
+        linked_transcript_id: "tx_006",
+        session_id: "session_12345",
+        sentiment: "neutral",
+        analysis:
+          "Client concerns were acknowledged but not emotionally reinforced.",
+      },
+    ],
+  },
+
+  {
+    id: 5,
+    topic: "Process Adherence",
+    score: 8.5,
+    grade: "Strong",
+    color: "green",
+    icon: "check-circle",
+    session_id: "session_12345",
+    tags: [
+      {
+        tag_id: "tag_pa_001",
+        name: "Agenda Flow",
+        linked_transcript_id: "tx_003",
+        session_id: "session_12345",
+        sentiment: "positive",
+        analysis:
+          "Call followed a structured discovery → demo → discussion flow.",
       },
       {
-        title: "Objection Handling",
-        subtitle: "Resolving Customer Concerns",
-        score: 8,
-        icon: "AlertCircle",
-        description:
-          "Handled the 'Waiting Period' concern effectively by acknowledging the pain point and explaining the industry standard.",
-        quote:
-          "I understand 2 years seems long, but this ensures comprehensive coverage for a chronic condition..."
+        tag_id: "tag_pa_002",
+        name: "Next Steps Closure",
+        linked_transcript_id: "tx_005",
+        session_id: "session_12345",
+        sentiment: "positive",
+        analysis:
+          "Next steps were discussed clearly, avoiding ambiguity.",
+      },
+    ],
+  },
+
+  {
+    id: 6,
+    topic: "Overall Sales Effectiveness",
+    score: 7.8,
+    grade: "Good",
+    color: "green",
+    icon: "trending-up",
+    session_id: "session_12345",
+    tags: [
+      {
+        tag_id: "tag_se_001",
+        name: "Solution Fit",
+        linked_transcript_id: "tx_003",
+        session_id: "session_12345",
+        sentiment: "positive",
+        analysis:
+          "Solution broadly aligned with ICICI’s operational needs.",
       },
       {
-        title: "Cross-Selling & Up-Selling",
-        subtitle: "Basket Value Optimization",
-        score: 5,
-        icon: "Layers",
-        description:
-          "You missed an opportunity. The client mentioned 'daily commute', which is a strong trigger for a Personal Accident cover pitch.",
-        aiTip:
-          "Since you travel daily for work, a Personal Accident cover of ₹1Cr costs only ₹4500. Should I add that?"
+        tag_id: "tag_se_002",
+        name: "Deal Momentum",
+        linked_transcript_id: "tx_005",
+        session_id: "session_12345",
+        sentiment: "neutral",
+        analysis:
+          "Deal progressed but lacked urgency-driving hooks.",
+      },
+    ],
+  },
+],
+
+
+  dataIntelligence: {
+    session_id: "session_12345",
+
+    coreRequirements:
+      "Real-time telecalling assist, text-based input, BFSI accuracy",
+
+    blockers: [
+      {
+        label: "Product Gap",
+        severity: "high",
+        description: "Real-time telecalling assistance not live.",
       },
       {
-        title: "Process Adherence",
-        subtitle: "Compliance & Guidelines",
-        score: 10,
-        icon: "ClipboardCheck",
-        description:
-          "Perfect adherence. You correctly explained the exclusions and the claim process.",
-        tags: [
-          "Explained Exclusions",
-          "Explained Waiting Period",
-          "Disclosed Commission",
-          "Free-look period"
-        ]
-      }
-    ]
-  }
+        label: "Dependency",
+        severity: "medium",
+        description: "Reliance on Sarvam AI for TTS.",
+      },
+    ],
+
+    tech_due_diligence: [
+      "Is the tech built in-house or outsourced?",
+      "What is the accuracy rate benchmark?",
+      "Can text-input be used instead of voice?",
+      "Which LLM version is used?",
+      "Can we train on website links?",
+    ],
+  },
+
+  actionItems: {
+    session_id: "session_12345",
+    completedCount: 1,
+    totalCount: 4,
+
+    tasks: [
+      {
+        id: 1,
+        title: "Product Brochure Sent",
+        owner: "Sales",
+        completed: true,
+        blocked: false,
+      },
+      {
+        id: 2,
+        title: "Wait for Training Data",
+        owner: "Client",
+        completed: false,
+        blocked: true,
+      },
+    ],
+
+    collateralGaps: [
+      {
+        title: "Missing Asset Demo",
+        impact: "Medium",
+        description: "Insurance demo used instead of Loans.",
+      },
+    ],
+  },
 };
 
 
+
 export default function DataWrapper({ children }: { children: React.ReactNode }) {
-  const[selectedReco,setSelectedReco]=useState<string>("");
-  const [reco,setReco]=useState<[]>([]);
-  const url = window.location.href;
-  const match = url.match(/cid_\d{4}/);
-  const customerId = match ? match[0] : "";
-  console.log(customerId,"the id of customer");
 
-  const  [clientProfileData,setClientProfileData]=useState<any>(FinalReviewData.clientDetails);
+   // Extract customer ID from URL
+    const url = window.location.href;
+    const match = url.match(/cid_\d{4}/);
+    const customerId = match ? match[0] : "test_cid_0000";
+    console.log(customerId,"the id of customer");
+ 
+
+  //STATES FOR DATA FURTHER WILL CHNAGE TO REDUCERS
+
+  const  [clientProfileData,setClientProfileData]=useState<any>();
+
+  const [actionItems,setActionItems]=useState<any>(FinalReviewData.actionItems);
+
+  const [dataIntelligence,setDataIntelligence]=useState<any>(FinalReviewData.dataIntelligence);
+
+  const [assessmentData,setAssessmentData]=useState<any>(FinalReviewData.QualityAssessmentData);
+
+  const [transcriptionData,setTranscriptionData]=useState<any>(FinalReviewData.transcript);
   
-  const [performanceData,setPerformanceData]=useState<any>(FinalReviewData.performance);
+  const [meetingMetadata,setMeetingMetadata]=useState<any>(FinalReviewData.callMeta);  
 
-  const [breakdownData,setBreakdownData]=useState<any>(FinalReviewData.detailedBreakdown);
+  const [selectedTranscriptId,setSelectedTranscriptId]=useState<string>("");
 
-  const [transcriptionData,setTranscriptionData]=useState<any>(FinalReviewData.transcription);
-
-  const [meetingMetadata,setMeetingMetadata]=useState<any>(FinalReviewData.meetingMetadata);  
+  const [audioTimeStamp,setAudioTimeStamp]=useState<string>("");
 
   if (!customerId) console.log("cid_xxxx not found")
         // const flags=useAppSelector((s)=>s.flags.Flag);
@@ -240,7 +419,7 @@ export default function DataWrapper({ children }: { children: React.ReactNode })
 
   const dispatch = useAppDispatch()
 
-  // ✅ Active Redux state
+
   const transcription = useAppSelector((s) => s.transcription.transcription || [])
   const aiCues = useAppSelector((s) => s.cues?.cues || [])
   const financials = useAppSelector((s) => s.customerInfo?.customer_info || [])
@@ -248,31 +427,50 @@ export default function DataWrapper({ children }: { children: React.ReactNode })
   const [audioUrl, setAudioUrl] = useState<string>(FinalReviewData.audio_url || "" )
   const topContainerRef = useRef(null)
 
-  useEffect(() => {
-    const getInfo=async()=>{
-      try{
-const res =  await axios.post(
-        "https://recruito.vitti.insure/lms_router",
-       { route_name:"main_router",
-        json_data:
-          { 
-            trigger_func: "req_postfacto_data", 
-            params: { session_id: customerId } 
-          }}
-      )
-console.log("Client Profile Data:", res.data);
-setClientProfileData(res.data.clientDetails);
-setPerformanceData(res.data.performance);
-setBreakdownData(res.data.detailedBreakdown);
-setTranscriptionData(res.data.transcription);
-setMeetingMetadata(res.data.meetingMetadata);
-setAudioUrl(res.data.audio_url);
-      }catch(err){
-        console.error("Error fetching data:", err);
-      }
+
+
+  useEffect(()=>{
+    const getDetalsFxn=async()=>{
+      const resp=await axios.post('http://localhost:5000/get-performance',
+      {session_id:"session_id_1234"}
+      );
+      console.log("Performance Data:", resp.data);
+      setAssessmentData(resp.data.QualityAssessmentData);
+      setTranscriptionData(resp.data.transcript);
+      setMeetingMetadata(resp.data.callMeta);
+      setAudioUrl(resp.data.audio_url);
+      setDataIntelligence(resp.data.dataIntelligence);
+      setActionItems(resp.data.actionItems);
     }
-    getInfo();
-  }, [])
+    getDetalsFxn();
+  },[customerId])
+
+//   useEffect(() => {
+//     const getInfo=async()=>{
+//       try{
+// const res =  await axios.post(
+//         "https://recruito.vitti.insure/lms_router",
+//        { route_name:"main_router",
+//         json_data:
+//           { 
+//             trigger_func: "req_postfacto_data", 
+//             params: { session_id: customerId } 
+//           }
+//      }
+//       )
+// console.log("Client Profile Data:", res.data);
+// setClientProfileData(res.data.clientDetails);
+// setPerformanceData(res.data.performance);
+// setBreakdownData(res.data.detailedBreakdown);
+// setTranscriptionData(res.data.transcription);
+// setMeetingMetadata(res.data.meetingMetadata);
+// setAudioUrl(res.data.audio_url);
+//       }catch(err){
+//         console.error("Error fetching data:", err);
+//       }
+//     }
+//     getInfo();
+//   }, [])
 
 useEffect(() => {
   
@@ -351,20 +549,23 @@ useEffect(() => {
     topContainerRef,
     updateTranscriptionFeedback,
     updateCuesFeedback,
-    selectedReco,
-    setSelectedReco,
-    reco,
-    setReco,
+    setSelectedTranscriptId,
+  selectedTranscriptId,
+    
     clientProfileData,
   setClientProfileData,
-  performanceData,
-  setPerformanceData,
-  breakdownData,
-  setBreakdownData,
+  dataIntelligence,
+  setDataIntelligence,
+  assessmentData,
+  setAssessmentData,
   transcriptionData,
   setTranscriptionData,
   meetingMetadata,
-  setMeetingMetadata
+  setMeetingMetadata,
+  actionItems,
+  setActionItems,
+  setAudioTimeStamp,
+  audioTimeStamp
   }
 
   return <Context.Provider value={values}>{children}</Context.Provider>

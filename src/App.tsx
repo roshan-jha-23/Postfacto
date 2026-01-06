@@ -3,8 +3,9 @@ import { useState, useEffect } from "react"
 
 import DataWrapper from "./context/DataWrapper"
 import ReduxProvider from "./redux/store/Providers"
+import Dashboard from "./components/dashboard"
 
-import MeetingAnalysisPage from "./components/PostfactoDashboard"
+//  import Dashboard from "@/components/dashboard/dashboard"
 // import { useAppSelector } from "./redux/store/store"
 
 function App() {
@@ -70,7 +71,7 @@ function App() {
   return (
     <ReduxProvider>
       <DataWrapper>
-       <MeetingAnalysisPage/>
+         <Dashboard />
       </DataWrapper>
     </ReduxProvider>
   )

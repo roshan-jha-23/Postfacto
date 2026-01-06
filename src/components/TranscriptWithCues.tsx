@@ -1,9 +1,8 @@
-
+"use client"
 
 import { useState, useEffect, useRef } from "react"
 import { Search, Zap, ChevronUp, ChevronDown, X, Flag } from "lucide-react"
 import { useData } from "../context/DataWrapper"
-
 
 interface TranscriptMessage {
   id: string
@@ -33,13 +32,14 @@ export function Transcript() {
   const [activeMsgId, setActiveMsgId] = useState<string | null>(null)
   const [activeFlagData, setActiveFlagData] = useState<{ text: string; time: string }[]>([])
 
+  const [selectedFlagOption, setSelectedFlagOption] = useState<string | null>(null)
+  const [flagInputText, setFlagInputText] = useState("")
+
+  const [isSavingFlag, setIsSavingFlag] = useState(false)
+
   const safeMessages = Array.isArray(transcriptionData?.messages) ? transcriptionData.messages : []
 
-  // --------------------------------------------------
-  // SEARCH LOGIC
-  // --------------------------------------------------
   useEffect(() => {
-    
     if (!searchQuery.trim()) {
       setMatchingMessageIds([])
       setCurrentResultIndex(-1)
@@ -81,9 +81,6 @@ export function Transcript() {
     (msg: any) => msg.content?.toLowerCase().includes(searchQuery.toLowerCase()) || msg.isAICue,
   )
 
-  // --------------------------------------------------
-  // AI PROMPT RENDERER
-  // --------------------------------------------------
   const renderAiPrompt = (aiPrompt: any) => {
     if (!aiPrompt) return null
 
@@ -110,17 +107,18 @@ export function Transcript() {
     return <p className="text-xs text-blue-800 leading-relaxed">{JSON.stringify(aiPrompt)}</p>
   }
 
-  // --------------------------------------------------
-  // POPUPS
-  // --------------------------------------------------
   const openFlagPopup = (id: string) => {
     setActiveMsgId(id)
+    setSelectedFlagOption(null)
+    setFlagInputText("")
     setShowFlagPopup(true)
   }
 
   const closeFlagPopup = () => {
     setShowFlagPopup(false)
     setActiveMsgId(null)
+    setSelectedFlagOption(null)
+    setFlagInputText("")
   }
 
   const openFlagDataPopup = (data: any[]) => {
@@ -133,44 +131,116 @@ export function Transcript() {
     setActiveFlagData([])
   }
 
-  // --------------------------------------------------
-  // UI
-  // --------------------------------------------------
+  const saveFlag = async (messageId: string, text: string) => {
+    setIsSavingFlag(true)
+    try {
+      console.log("[v0] Saving flag:", { messageId, text })
+      const response = await fetch("/api/flags", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          messageId,
+          text,
+          timestamp: new Date().toISOString(),
+        }),
+      })
+
+      if (!response.ok) {
+        throw new Error("Failed to save flag")
+      }
+
+      const result = await response.json()
+      console.log("[v0] Flag saved successfully:", result)
+      return true
+    } catch (error) {
+      console.error("[v0] Error saving flag:", error)
+      alert("Failed to save flag. Please try again.")
+      return false
+    } finally {
+      setIsSavingFlag(false)
+    }
+  }
+
+  const flagOptions = ["System Not Responding", "Incorrect Data Captured", "Incorrect Q/A", "Latency is High", "Others"]
+
   return (
     <div className="flex flex-col h-full overflow-hidden">
-      {/* ADD FLAG POPUP */}
       {showFlagPopup && (
         <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
-          <div className="bg-white p-5 rounded-xl w-80 shadow-xl">
-            <h3 className="text-sm font-semibold mb-3">Add Flag</h3>
+          <div className="bg-[#2a2d35] p-6 rounded-xl w-96 shadow-xl">
+            <h3 className="text-lg font-semibold mb-4 text-white">Raise a Flag</h3>
 
-            <input
-              id="flagText"
-              type="text"
-              placeholder="Enter flag..."
-              className="w-full border border-slate-300 rounded-lg px-3 py-2 mb-3 text-sm"
-            />
+            {!selectedFlagOption ? (
+              <div className="space-y-3">
+                {flagOptions.map((option) => (
+                  <button
+                    key={option}
+                    onClick={() => setSelectedFlagOption(option)}
+                    className="w-full bg-[#3a3d45] hover:bg-[#4a4d55] text-white rounded-lg py-3 px-4 text-sm font-medium transition-colors text-center"
+                    disabled={isSavingFlag}
+                  >
+                    {option}
+                  </button>
+                ))}
 
-            <div className="flex justify-end gap-2">
-              <button onClick={closeFlagPopup} className="text-sm px-3 py-1.5 rounded-lg border border-slate-300">
-                Cancel
-              </button>
+                <button
+                  onClick={closeFlagPopup}
+                  className="w-full bg-[#3a3d45] hover:bg-[#4a4d55] text-white rounded-lg py-3 px-4 text-sm font-medium transition-colors mt-4"
+                  disabled={isSavingFlag}
+                >
+                  Close
+                </button>
+              </div>
+            ) : (
+              <div className="space-y-4">
+                <div className="bg-[#3a3d45] rounded-lg p-3">
+                  <p className="text-sm text-slate-300">Selected: {selectedFlagOption}</p>
+                </div>
 
-              <button
-                onClick={() => {
-                  const text = (document.getElementById("flagText") as HTMLInputElement).value.trim()
+                <input
+                  type="text"
+                  placeholder="Add additional details (optional)"
+                  value={flagInputText}
+                  onChange={(e) => setFlagInputText(e.target.value)}
+                  className="w-full bg-[#3a3d45] text-white placeholder-slate-400 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  disabled={isSavingFlag}
+                  autoFocus
+                />
 
-                  if (!text) return
+                <div className="flex justify-end gap-2">
+                  <button
+                    onClick={() => {
+                      setSelectedFlagOption(null)
+                      setFlagInputText("")
+                    }}
+                    className="text-sm px-4 py-2 rounded-lg bg-[#3a3d45] text-white hover:bg-[#4a4d55] transition-colors"
+                    disabled={isSavingFlag}
+                  >
+                    Back
+                  </button>
 
-                  console.log("ADD FLAG:", activeMsgId, text)
+                  <button
+                    onClick={async () => {
+                      if (!activeMsgId || !selectedFlagOption) return
 
-                  closeFlagPopup()
-                }}
-                className="text-sm px-3 py-1.5 rounded-lg bg-blue-600 text-white"
-              >
-                Add
-              </button>
-            </div>
+                      const fullText = flagInputText ? `${selectedFlagOption}: ${flagInputText}` : selectedFlagOption
+
+                      const success = await saveFlag(activeMsgId, fullText)
+
+                      if (success) {
+                        closeFlagPopup()
+                      }
+                    }}
+                    className="text-sm px-4 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                    disabled={isSavingFlag}
+                  >
+                    {isSavingFlag ? "Saving..." : "Submit"}
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       )}
@@ -190,7 +260,7 @@ export function Transcript() {
               <p className="text-sm text-slate-600">No flags available</p>
             ) : (
               <ul className="space-y-2">
-                {activeFlagData.map((d, i) => (
+                {activeFlagData?.map((d, i) => (
                   <li
                     key={i}
                     className="border border-slate-200 p-3 rounded-lg bg-slate-50 hover:bg-slate-100 transition-colors"
@@ -267,6 +337,10 @@ export function Transcript() {
           filteredMessages.map((msg: TranscriptMessage) => {
             const isCurrent = matchingMessageIds[currentResultIndex] === msg.id
 
+            const hasFlags = msg.flags && typeof msg.flags === "object" && Object.keys(msg.flags).length > 0
+            const flagColor = hasFlags ? msg.flags.color : null
+            const isEmptyFlag = msg.flags && typeof msg.flags === "object" && Object.keys(msg.flags).length === 0
+
             return (
               <div
                 key={msg.id}
@@ -297,27 +371,34 @@ export function Transcript() {
                       {msg.speaker === "Agent" ? "A" : "C"}
                     </div>
 
-                    {/* FLAG INDICATOR */}
-                    {msg.flags && (
+                    {(hasFlags || isEmptyFlag) && (
                       <button
                         onClick={() => {
-                          if (msg?.flags?.color === "gray") {
+                          // Empty flags or gray flags should open add flag popup
+                          if (isEmptyFlag || flagColor === "gray" || !flagColor) {
                             openFlagPopup(msg.id)
                           } else {
-                            openFlagDataPopup(msg?.flags?.data)
+                            // Red/blue flags show existing data
+                            openFlagDataPopup(msg?.flags?.data || [])
                           }
                         }}
                         className={`mt-1 px-2 py-1 rounded-full flex items-center gap-1 text-xs font-medium transition-all duration-200 hover:scale-105 ${
-                          msg.flags.color === "red"
+                          flagColor === "red"
                             ? "bg-red-100 text-red-700 hover:bg-red-200 border border-red-300"
-                            : msg.flags.color === "blue"
+                            : flagColor === "blue"
                               ? "bg-blue-100 text-blue-700 hover:bg-blue-200 border border-blue-300"
                               : "bg-gray-100 text-gray-700 hover:bg-gray-200 border border-gray-300"
                         }`}
-                        title={msg.flags.color !== "gray" ? `${msg.flags.data?.length || 0} flags` : "Add flag"}
+                        title={
+                          isEmptyFlag || !flagColor || flagColor === "gray"
+                            ? "Add flag"
+                            : `${msg.flags.data?.length || 0} flags`
+                        }
                       >
                         <Flag className="h-3 w-3" />
-                        {msg.flags.color !== "gray" && <span>{msg.flags.data?.length || 0}</span>}
+                        {flagColor !== "gray" && flagColor && !isEmptyFlag && (
+                          <span>{msg.flags.data?.length || 0}</span>
+                        )}
                       </button>
                     )}
                   </div>

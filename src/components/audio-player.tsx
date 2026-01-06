@@ -1,13 +1,10 @@
-
-
 import type React from "react"
 
 import { useState, useRef, useEffect, useCallback, useMemo } from "react"
 import { Play, Pause, SkipBack, SkipForward, Volume2, VolumeX, Loader } from "lucide-react"
 import { useData } from "../context/DataWrapper"
-
 export function AudioPlayer() {
-  const { audioUrl, title = "Audio Transcript" }: any = useData()
+  const { audioUrl, title = "Meeting Recording", audioTimeStamp }: any = useData()
   console.log(audioUrl, "the audio url in audio player")
 
   const audioRef = useRef<HTMLAudioElement | null>(null)
@@ -99,6 +96,28 @@ export function AudioPlayer() {
       audioRef.current.playbackRate = playbackSpeed
     }
   }, [playbackSpeed])
+
+  useEffect(() => {
+    const audio = audioRef.current
+    if (!audio || !audioTimeStamp || typeof audioTimeStamp !== "number") return
+
+    // Wait for metadata to be loaded before seeking
+    const seekToTimestamp = () => {
+      if (audioTimeStamp >= 0 && audioTimeStamp <= audio.duration) {
+        audio.currentTime = audioTimeStamp
+        setCurrentTime(audioTimeStamp)
+      }
+    }
+
+    if (audio.readyState >= 1) {
+      // Metadata already loaded
+      seekToTimestamp()
+    } else {
+      // Wait for metadata to load
+      audio.addEventListener("loadedmetadata", seekToTimestamp, { once: true })
+      return () => audio.removeEventListener("loadedmetadata", seekToTimestamp)
+    }
+  }, [audioTimeStamp, duration])
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -288,8 +307,8 @@ export function AudioPlayer() {
   }
 
   return (
-    <div className="border-b border-slate-200 bg-white p-4">
-      <audio ref={audioRef} src={audioUrl} crossOrigin="anonymous" />
+    <div className="border-b border-slate-200 bg-white p-4 sticky top-30 z-10 shadow-sm">
+      <audio ref={audioRef} src={audioUrl} />
 
       <div className="flex items-center justify-between mb-3">
         <h3 className="font-semibold text-slate-800 text-sm px-2">{title}</h3>
